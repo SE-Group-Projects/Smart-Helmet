@@ -4,17 +4,17 @@
 int myFunction(int, int);
 
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(LED, OUTPUT);
+  Serial.begin(115200);
+  pinMode(2, OUTPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  digitalWrite(LED, HIGH);
+  digitalWrite(2, HIGH);
   delay(500);
-  digitalWrite(LED, LOW);
+  digitalWrite(2, LOW);
   delay(500);
 }
+
 
 // put function definitions here:
 int myFunction(int x, int y) {
