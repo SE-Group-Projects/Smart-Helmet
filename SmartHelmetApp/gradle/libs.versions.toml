@@ -11,7 +11,7 @@ composeBom = "2024.09.00"
 lifecycle =  "2.9.0"
 coroutines = "1.7.3"
 room = "2.6.1"
-hilt = "2.40"
+hilt = "2.48"
 tflite = "2.14.0"
 
 
@@ -50,11 +50,10 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-[plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 
