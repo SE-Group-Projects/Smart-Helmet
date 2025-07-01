@@ -16,17 +16,17 @@
 │   │               └── smartelmetapp/
 │   │                   ├── ui/
 │   │                   │   └── theme
-│   │                   └── MainActivity.kt
+│   │                   └── MainActivity.kt                # Main interface of the APP
 │   ├── .gitignore
-│   ├── build.gradle.kts
+│   ├── build.gradle.kts                                   
 │   └── proguard-rules.pro
 ├── gradle/
 │   └── ad
 ├── .gitignore 
-├── build.gradle.kts
+├── build.gradle.kts                                        # depedancies and build options
 ├── gradle.properties
 ├── gradlew
 ├── gradlew.bat
-└── settings.gradle.kts
+└── settings.gradle.kts                                     # Project settings 
 ```
    
