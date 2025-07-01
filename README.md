@@ -4,7 +4,8 @@
 - Hardware Developments
    - #### PlatFormIO Project/Smart Helmet Folder
        - **src** : *Folder for the firmware development*
-
+    
+- Software Developments
    - #### SmartHelmetApp Folder
 ```SmartHelmetApp/ 
 ├── .idea
