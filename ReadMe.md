@@ -17,7 +17,7 @@ If you add or change any folder file please blog it in here or your development 
     └── platformio.ini        # Dependacies when configuring the components
 ```
 
-1. Before the development make sure to download this drivers
+- Before the development make sure to download this drivers
    
    ![Drivers For ESP32 DevKit](Assets/Drivers)
    
@@ -48,4 +48,12 @@ If you add or change any folder file please blog it in here or your development 
 ├── gradlew.bat
 └── settings.gradle.kts                                     # Project settings 
 ```
-   
+
+
+## Developers Configurations
+
+1. When you are developing your part of the project make sure to use your own ** Branches **
+2. Do not do the changes to **Backup Branch and Main Branch**
+3. 
+
+
