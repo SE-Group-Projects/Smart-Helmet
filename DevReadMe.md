@@ -1,8 +1,11 @@
 # Smart-Helmet
 
 ## Folder Structure For the Developers
+
+This is the folder structure you will invovled in your development
+
 - Hardware Developments
-  
+
 ```PlatFormIO Project/
 └── Smart Helmet Folder/
     ├── include
@@ -12,6 +15,7 @@
     ├── .gitignore
     └── platformio.ini        # Dependacies when configuring the components
 ```
+
 
 - Software Developments
   
