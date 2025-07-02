@@ -19,7 +19,7 @@ If you add or change any folder file please blog it in here or your development 
 
 1. Before the development make sure to download this drivers
    
-   ![Drivers For ESP32 DevKit](Assets/Drives/)
+   ![Drivers For ESP32 DevKit](Assets/Drivers)
    
    or download from here : https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads
 
