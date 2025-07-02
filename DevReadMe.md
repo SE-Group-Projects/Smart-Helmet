@@ -3,6 +3,7 @@
 ## Folder Structure For the Developers
 
 This is the folder structure you will invovled in your development
+If you add or change any folder file please blog it in here or your development roadmap
 
 - Hardware Developments
 
