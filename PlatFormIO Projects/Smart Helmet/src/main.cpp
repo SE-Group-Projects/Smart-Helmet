@@ -1,22 +1,16 @@
 #include <Arduino.h>
 #define  LED 2
-// put function declarations here:
-int myFunction(int, int);
 
 void setup() {
   Serial.begin(115200);
-  pinMode(2, OUTPUT);
+  pinMode(2, OUTPUT);  // or try LED_BUILTIN
 }
 
 void loop() {
+  Serial.println("Blink ON");
   digitalWrite(2, HIGH);
   delay(500);
+  Serial.println("Blink OFF");
   digitalWrite(2, LOW);
   delay(500);
-}
-
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
 }
