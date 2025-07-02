@@ -2,9 +2,14 @@
 
 ## Folder Structure For the Developers
 - Hardware Developments
-   - #### PlatFormIO Project/Smart Helmet Folder
-       - **src** : *Folder for the firmware development*
-    
+```PlatFormIO Project/
+└── Smart Helmet Folder/
+    ├── include
+    ├── lib                   # libraries
+    ├── src                   # develpment Folder
+    ├── test
+    ├── .gitignore
+    └── platformio.ini        # Dependacies when configuring the components ```
 - Software Developments
    - #### SmartHelmetApp Folder
 ```SmartHelmetApp/ 
