@@ -49,7 +49,6 @@ If you add or change any folder file please blog it in here or your development 
 └── settings.gradle.kts                                     # Project settings 
 ```
 
-
 ## Developers Configurations
 
 - When you are developing your part of the project make sure to use your own **Branches**.
