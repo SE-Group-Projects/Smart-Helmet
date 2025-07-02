@@ -58,10 +58,10 @@ If you add or change any folder file please blog it in here or your development 
 
 ## Developers Documentation
 - When developing make sure to document ;
-      --Step you took for development
-      --Configurations steps / dependanceis (so when other developers trying out they also can download them and work with them)
-      --Guide (if there are)
-      --Errors that can occur and how to mitigate the
+      __Step you took for development__
+      __Configurations steps / dependanceis (so when other developers trying out they also can download them and work with them)__
+      __Guide (if there are)__
+      __Errors that can occur and how to mitigate it __
 
    #### Documentation File
   ![Documentation](Assets/Documentation)
