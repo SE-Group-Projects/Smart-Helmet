@@ -65,8 +65,7 @@ If you add or change any folder file please blog it in here or your development 
 
    #### Documentation File
  ![📄 View Project Documentation](Assets/Documentation/Project%20Documentations)
- 
- https://github.com/SE-Group-Projects/Smart-Helmet/blob/main/Assets/Documentation/Project%20Documentations/Open%20Notebook.onetoc2
+ in That destination use the **Open Notebook.onetoc2**
 
           
     
