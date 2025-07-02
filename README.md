@@ -2,6 +2,7 @@
 
 ## Folder Structure For the Developers
 - Hardware Developments
+  
 ```PlatFormIO Project/
 └── Smart Helmet Folder/
     ├── include
@@ -9,11 +10,11 @@
     ├── src                   # develpment Folder
     ├── test
     ├── .gitignore
-    └── platformio.ini        # Dependacies when configuring the components ```
-
+    └── platformio.ini        # Dependacies when configuring the components
+```
 
 - Software Developments
-   - #### SmartHelmetApp Folder
+  
 ```SmartHelmetApp/ 
 ├── .idea
 ├── app/
