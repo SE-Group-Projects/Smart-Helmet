@@ -52,8 +52,19 @@ If you add or change any folder file please blog it in here or your development 
 
 ## Developers Configurations
 
-1. When you are developing your part of the project make sure to use your own ** Branches **
-2. Do not do the changes to **Backup Branch and Main Branch**
-3. 
+- When you are developing your part of the project make sure to use your own **Branches**.
+- Do not do the changes to **Backup Branch and Main Branch**.
+- Update the Projects times lines according to your progress
+
+
+## Developers Documentation
+- When developing make sure to document ;
+      --Step you took for development
+      --Configurations steps / dependanceis (so when other developers trying out they also can download them and work with them)
+      --Guide (if there are)
+      --Errors that can occur and how to mitigate the
+
+   #### Documentation File
+          
 
 
