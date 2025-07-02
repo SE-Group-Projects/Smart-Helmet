@@ -10,6 +10,8 @@
     ├── test
     ├── .gitignore
     └── platformio.ini        # Dependacies when configuring the components ```
+
+
 - Software Developments
    - #### SmartHelmetApp Folder
 ```SmartHelmetApp/ 
