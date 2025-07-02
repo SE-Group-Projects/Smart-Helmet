@@ -17,6 +17,8 @@ If you add or change any folder file please blog it in here or your development 
     └── platformio.ini        # Dependacies when configuring the components
 ```
 
+1. Before the development make sure to download this drivers
+       >https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads
 
 - Software Developments
   
