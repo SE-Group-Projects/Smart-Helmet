@@ -29,5 +29,10 @@ void loop() {
     Serial.print(gps.speed.kmph());
   }
 
+  if (gps.course.isUpdated()){
+    Serial.print("Heading (degreen)");
+    Serial.println("gps.course.deg()");
+  }
   
+  delay(1000); // print every 1 secound
 }
