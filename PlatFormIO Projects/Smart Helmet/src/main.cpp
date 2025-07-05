@@ -12,10 +12,22 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Blink ON");
-  digitalWrite(2, HIGH);
-  delay(500);
-  Serial.println("Blink OFF");
-  digitalWrite(2, LOW);
-  delay(500);
+
+  while(GPS_Serial.available() > 0){ // if the GPS is available then encode the data
+    gps.encode(GPS_Serial.read());
+  }
+
+  if (gps.location.isUpdated()){
+    Serial.print("Latitude: ");
+    Serial.println(gps.location.lat(), 6);
+    Serial.print("Longitude: ");
+    Serial.println(gps.location.lng(), 6);
+  }
+
+  if (gps.speed.isUpdated()) {
+    Serial.print("Speed (km/h) : ");
+    Serial.print(gps.speed.kmph());
+  }
+
+  
 }
