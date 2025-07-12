@@ -1,38 +1,54 @@
 #include <Arduino.h>
-#include <HardwareSerial.h>
-#include <TinyGPS++.h>
+#include <Wire.h>
+#include <Adafruit_VL53L0X.h>
 
-TinyGPSPlus gps;
-HardwareSerial GPS_Serial(2); 
+#define SDA_PIN 21
+#define SCL_PIN 22
+#define XSHUT_PIN 25 // Used to power on sensor
+
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 void setup() {
   Serial.begin(115200);
-  GPS_Serial.begin(9600, SERIAL_8N1, 16, 17); // Rx , TX
-  Serial.println("Waiting for GPS signal.....");
+  delay(1000);  // Wait for serial monitor
+  
+  Serial.println("VL53L0X Wear Detection Starting...");
+
+  // Initialize XSHUT
+  pinMode(XSHUT_PIN, OUTPUT);
+  digitalWrite(XSHUT_PIN, LOW);
+  delay(10);  // Reset the sensor
+  digitalWrite(XSHUT_PIN, HIGH);
+  delay(10);  // Wait for sensor boot
+
+  // Start I2C
+  Wire.begin(SDA_PIN, SCL_PIN);
+
+  if (!lox.begin()) {
+    Serial.println("⚠️ Failed to initialize VL53L0X sensor. Check wiring and power.");
+    while (1);
+  }
+
+  Serial.println("✅ VL53L0X sensor initialized.");
 }
 
 void loop() {
+  VL53L0X_RangingMeasurementData_t measure;
+  lox.rangingTest(&measure, false); // false = no debug output
 
-  while(GPS_Serial.available() > 0){ // if the GPS is available then encode the data
-    gps.encode(GPS_Serial.read());
+  if (measure.RangeStatus != 4) {  // 4 means out of range
+    Serial.print("👷 Distance: ");
+    Serial.print(measure.RangeMilliMeter);
+    Serial.print(" mm — ");
+
+    if (measure.RangeMilliMeter < 100) {
+      Serial.println("Helmet is being WORN ✅");
+    } else {
+      Serial.println("Helmet is NOT worn ❌");
+    }
+  } else {
+    Serial.println("Out of range ❌");
   }
 
-  if (gps.location.isUpdated()){
-    Serial.print("Latitude: ");
-    Serial.println(gps.location.lat(), 6);
-    Serial.print("Longitude: ");
-    Serial.println(gps.location.lng(), 6);
-  }
-
-  if (gps.speed.isUpdated()) {
-    Serial.print("Speed (km/h) : ");
-    Serial.print(gps.speed.kmph());
-  }
-
-  if (gps.course.isUpdated()){
-    Serial.print("Heading (degreen)");
-    Serial.println("gps.course.deg()");
-  }
-  
-  delay(1000); // print every 1 secound
+  delay(1000);
 }
