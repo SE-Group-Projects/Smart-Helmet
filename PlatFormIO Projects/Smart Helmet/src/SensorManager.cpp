@@ -70,15 +70,15 @@ float SensorManager::getTemperature() const {
     return _currentTemperature;
 }
 
-double SensorManager::getLatitude() {
+double SensorManager::getLatitude(){
     return _gps.location.lat();
 }
 
-double SensorManager::getLongitude()  {
+double SensorManager::getLongitude(){
     return _gps.location.lng();
 }
 
-double SensorManager::getSpeedKph() const {
+double SensorManager::getSpeedKph(){
     return _gps.speed.kmph();
 }
 
