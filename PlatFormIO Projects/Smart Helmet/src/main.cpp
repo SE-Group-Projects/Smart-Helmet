@@ -3,8 +3,8 @@
 #include "SensorManager.h"
 #include "VentController.h"
 #include "CollisionDetector.h"
-// #include "BlynkManager.h"
-// #include "SpeedMonitor.h"
+#include "BlynkManager.h"
+//#include "SpeedMonitor.h"
  #include "BluetoothNotifier.h"
 
 // pinsss....................
@@ -27,12 +27,22 @@ const int SIM_RX_PIN = 26;
 const int SIM_TX_PIN = 27;
 const char* EMERGENCY_PHONE_NUMBER = "+94702016212";
 
+const char* WIFI_SSID = "YOUR_WIFI_SSID";
+const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
+const char* BLYNK_AUTH_TOKEN = "YOUR_BLYNK_AUTH_TOKEN";
+
 // instances
 SystemManager systemManager(FSR_PIN, PRESSURE_THRESHOLD, COLLISION_IMPACT_THRESHOLD, SHUTDOWN_TIMEOUT);
 SensorManager sensorManager(GPS_TX_PIN, GPS_RX_PIN, LM75_I2C_ADDRESS);
 VentController ventController(SERVO_PIN, TEMP_THRESHOLD_HIGH, VENT_OPEN_ANGLE, VENT_CLOSED_ANGLE);
 BluetoothNotifier notifier(EMERGENCY_PHONE_NUMBER, SIM_TX_PIN, SIM_RX_PIN);
+BlynkManager blynkManager(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
 CollisionDetector collisionDetector;
+
+// Timer for sending data to Blynk to avoid flooding
+unsigned long lastBlynkUpdateTime = 0;
+const long blynkUpdateInterval = 5000; // 5 sec
+
 
 void setup(){
   Serial.begin(115200);
@@ -43,6 +53,8 @@ void setup(){
     sensorManager.setup();
     ventController.setup();
     collisionDetector.setup();
+    notifier.setup();
+    blynkManager.setup();
 
     Serial.println("All systems initialized. Main loop starting.");
 }
@@ -50,17 +62,32 @@ void setup(){
 void loop(){
   // aways update the sytem with the pressure........
   systemManager.update();
+  blynkManager.updateSystemStatus(systemManager.isSystemOn());
 
   // only if the the system is on the other will run,,,,,,,,,,,,,,,
   if (systemManager.isSystemOn()){
+    blynkManager.run();
     // read data from the snesors.......
     sensorManager.readSensor();
 
     // Update the vent based on the new temperature reading.......                                                 
     ventController.update(sensorManager.getTemperature());
 
+    // send data to the Blynk ....
+    if (millis() - lastBlynkUpdateTime > blynkUpdateInterval){
+      blynkManager.updateSensorData(
+        sensorManager.getTemperature(),
+        sensorManager.getSpeedKph(),
+        sensorManager.getLatitude(),
+        sensorManager.getLongitude(),
+        sensorManager.isGpsLocationValid()
+      );
+      lastBlynkUpdateTime = millis();
+    }
+
     //collision check .............
     if (systemManager.isCollisionDetected()) {
+      blynkManager.sendCollisionNotification();
             if (sensorManager.isGpsLocationValid()) {
                 notifier.sendCollisionAlert(
                     sensorManager.getLatitude(),

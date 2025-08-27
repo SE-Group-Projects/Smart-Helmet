@@ -43,5 +43,6 @@ void BlynkManager::updateSensorData(float temp, double speed, double lat, double
 
 void BlynkManager::sendCollisionNotification() {
     Serial.println("Sending notification to Blynk app...");
-    Blynk.notify("CRASH DETECTED! Emergency alert has been sent.");
+    Blynk.virtualWrite(V10, 1);
+
 }
