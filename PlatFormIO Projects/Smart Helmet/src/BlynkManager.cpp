@@ -31,3 +31,17 @@ void BlynkManager::updateSystemStatus(bool isOn){
     }
 }
 
+void BlynkManager::updateSensorData(float temp, double speed, double lat, double lon, bool isGpsValid) {
+    Blynk.virtualWrite(VPIN_TEMPERATURE, temp);
+    Blynk.virtualWrite(VPIN_SPEED, speed);
+
+    if (isGpsValid) {
+        // Blynk's GPS Map widget uses this format: index, latitude, longitude, value
+        Blynk.virtualWrite(VPIN_GPS_MAP, 1, lat, lon, speed);
+    }
+}
+
+void BlynkManager::sendCollisionNotification() {
+    Serial.println("Sending notification to Blynk app...");
+    Blynk.notify("CRASH DETECTED! Emergency alert has been sent.");
+}
