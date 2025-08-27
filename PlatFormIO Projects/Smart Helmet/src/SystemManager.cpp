@@ -1,11 +1,14 @@
 #include "SystemManager.h"
 
-SystemManager::SystemManager(int fsrPin, int pressureThreshold, unsigned long shutdownTimeout)
+SystemManager::SystemManager(int fsrPin, int pressureThreshold, int impactThreshold, unsigned long shutdownTimeout)
     : _fsrPin(fsrPin), 
       _pressureThreshold(pressureThreshold), 
+      _impactThreshold(impactThreshold),
       _shutdownTimeout(shutdownTimeout),
       _isSystemOn(false), 
-      _lastPressureTime(0) {}
+      _collisionDetected(false),
+      _lastPressureTime(0),
+      _lastFsrReading(0) {}
 
 void SystemManager::setup(){
     pinMode(_fsrPin, INPUT);
@@ -15,7 +18,7 @@ void SystemManager::setup(){
 void SystemManager::update(){
     int fsrReading = analogRead(_fsrPin);
     Serial.println("Raw FSR Reading: " + String(fsrReading));
-    
+
     if (fsrReading > _pressureThreshold){
         if (!_isSystemOn){
              _isSystemOn = true;
