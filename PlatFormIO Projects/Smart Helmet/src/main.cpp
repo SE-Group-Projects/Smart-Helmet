@@ -27,9 +27,9 @@ const int SIM_RX_PIN = 26;
 const int SIM_TX_PIN = 27;
 const char* EMERGENCY_PHONE_NUMBER = "+94702016212";
 
-const char* WIFI_SSID = "YOUR_WIFI_SSID";
-const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
-const char* BLYNK_AUTH_TOKEN = "YOUR_BLYNK_AUTH_TOKEN";
+const char* WIFI_SSID = "KushanA14";
+const char* WIFI_PASS = "kushankabi1235";
+const char* BLYNK_AUTH_TOKEN = "F_CO_TTQUKhbjbPRwxfjGUA5n7Viq0v-";
 
 // instances
 SystemManager systemManager(FSR_PIN, PRESSURE_THRESHOLD, COLLISION_IMPACT_THRESHOLD, SHUTDOWN_TIMEOUT);
