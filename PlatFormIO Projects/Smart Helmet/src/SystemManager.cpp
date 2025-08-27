@@ -12,7 +12,7 @@ SystemManager::SystemManager(int fsrPin, int pressureThreshold, int impactThresh
 
 void SystemManager::setup(){
     pinMode(_fsrPin, INPUT);
-    _lastFsrReading = 500; 
+    _lastFsrReading = 499; 
     Serial.println("System Manager Initialized . Waiting for Pressure...");
 }
 
