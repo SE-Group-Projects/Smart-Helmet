@@ -66,12 +66,24 @@ void SensorManager::readSensor(){
 }
 
 // getters ..........
-float SensorManager::getTemperature() const{
+float SensorManager::getTemperature() const {
     return _currentTemperature;
 }
 
-double SensorManager::getLatitude() const{
+double SensorManager::getLatitude() {
     return _gps.location.lat();
+}
+
+double SensorManager::getLongitude()  {
+    return _gps.location.lng();
+}
+
+double SensorManager::getSpeedKph() const {
+    return _gps.speed.kmph();
+}
+
+bool SensorManager::isGpsLocationValid() const {
+    return _gps.location.isValid();
 }
 
 

@@ -12,9 +12,9 @@ class SensorManager {
         void readSensor();
 
         float getTemperature() const;
-        double getLatitude() const;
-        double getLongitude() const;
-        double getSpeedKph() const;
+        double getLatitude();
+        double getLongitude();
+        double getSpeedKph();
         bool isGpsLocationValid() const;
 
     private:
