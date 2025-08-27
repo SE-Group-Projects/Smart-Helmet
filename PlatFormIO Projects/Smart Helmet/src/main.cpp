@@ -27,3 +27,16 @@ SystemManager systemManager(FSR_PIN, PRESSURE_THRESHOLD, SHUTDOWN_TIMEOUT);
 SensorManager sensorManager(GPS_TX_PIN, GPS_RX_PIN, LM75_I2C_ADDRESS);
 VentController ventController(SERVO_PIN, TEMP_THRESHOLD_HIGH, VENT_OPEN_ANGLE, VENT_CLOSED_ANGLE);
 CollisionDetector collisionDetector;
+
+void setup(){
+  Serial.begin(115200);
+  Serial.println("\n\n Smart Helmet System Initializing. \n");
+
+   // Call the setup function for each component
+    systemManager.setup();
+    sensorManager.setup();
+    ventController.setup();
+    collisionDetector.setup();
+    
+    Serial.println("All systems initialized. Main loop starting.");
+}
