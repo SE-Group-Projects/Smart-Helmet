@@ -12,19 +12,20 @@ SystemManager::SystemManager(int fsrPin, int pressureThreshold, int impactThresh
 
 void SystemManager::setup(){
     pinMode(_fsrPin, INPUT);
+    _lastFsrReading = 500; 
     Serial.println("System Manager Initialized . Waiting for Pressure...");
 }
 
 void SystemManager::update(){
-    int fsrReading = analogRead(_fsrPin);
-    Serial.println("Raw FSR Reading: " + String(fsrReading));
+    int currentFsrReading = analogRead(_fsrPin);
+    Serial.println("Raw FSR Reading: " + String(currentFsrReading));
 
-    if (fsrReading > _pressureThreshold){
+    if (currentFsrReading> _pressureThreshold){
         if (!_isSystemOn){
              _isSystemOn = true;
             Serial.println("---------------------------------");
             Serial.print("Pressure detected! System is ON. (Reading: ");
-            Serial.print(fsrReading);
+            Serial.print(currentFsrReading);
             Serial.println(")");
             Serial.println("---------------------------------");
         }
@@ -35,6 +36,16 @@ void SystemManager::update(){
             Serial.println("---------------------------------");
             Serial.println("No pressure for 1 minute. System is SHUTDOWN.");
             Serial.println("---------------------------------");
+        }
+    }
+
+    if (_isSystemOn && !_collisionDetected){
+        int pressureSpike = currentFsrReading - _lastFsrReading;
+        if (pressureSpike > _impactThreshold) {
+            Serial.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Serial.printf("!!! COLLISION DETECTED !!! Pressure Spike: %d\n", pressureSpike);
+            Serial.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            _collisionDetected = true;
         }
     }
 }
