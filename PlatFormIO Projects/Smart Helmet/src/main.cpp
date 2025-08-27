@@ -37,6 +37,25 @@ void setup(){
     sensorManager.setup();
     ventController.setup();
     collisionDetector.setup();
-    
+
     Serial.println("All systems initialized. Main loop starting.");
+}
+
+void loop(){
+  // aways update the sytem with the pressure........
+  systemManager.update();
+
+  // only if the the system is on the other will run,,,,,,,,,,,,,,,
+  if (systemManager.isSystemOn()){
+    // read data from the snesors.......
+    sensorManager.readSensor();
+
+    // Update the vent based on the new temperature reading.......
+    ventController.update(sensorManager.getTemperature());
+
+    // check for collisionDetector
+    collisionDetector.check();
+
+    delay(2000);
+  }
 }
