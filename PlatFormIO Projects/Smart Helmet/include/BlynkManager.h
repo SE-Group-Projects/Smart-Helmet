@@ -21,8 +21,5 @@ private:
     const char* _authToken;
     const char* _ssid;
     const char* _password;
-}
-
-
-
+};
 #endif
