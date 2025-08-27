@@ -61,7 +61,7 @@ void loop(){
 
     //collision check .............
     if (systemManager.isCollisionDetected()) {
-            if (sensorManager.isG-psLocationValid()) {
+            if (sensorManager.isGpsLocationValid()) {
                 notifier.sendCollisionAlert(
                     sensorManager.getLatitude(),
                     sensorManager.getLongitude()
