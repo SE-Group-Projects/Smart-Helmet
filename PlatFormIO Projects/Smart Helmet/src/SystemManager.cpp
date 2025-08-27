@@ -14,7 +14,8 @@ void SystemManager::setup(){
 
 void SystemManager::update(){
     int fsrReading = analogRead(_fsrPin);
-
+    Serial.println("Raw FSR Reading: " + String(fsrReading));
+    
     if (fsrReading > _pressureThreshold){
         if (!_isSystemOn){
              _isSystemOn = true;

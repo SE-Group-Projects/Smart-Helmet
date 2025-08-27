@@ -9,8 +9,8 @@
 
 // pinsss....................
 const int FSR_PIN = 34;
-const int PRESSURE_THRESHOLD = 500;
-const unsigned long SHUTDOWN_TIMEOUT = 60000;  //system time out for  1 min..
+const int PRESSURE_THRESHOLD = 100;
+const unsigned long SHUTDOWN_TIMEOUT = 200000;  //system time out for  1 min..
 
 const int GPS_RX_PIN = 16;
 const int GPS_TX_PIN = 17;
@@ -50,11 +50,11 @@ void loop(){
     // read data from the snesors.......
     sensorManager.readSensor();
 
-    // Update the vent based on the new temperature reading.......
+    // Update the vent based on the new temperature reading.......                                                 
     ventController.update(sensorManager.getTemperature());
 
     // check for collisionDetector
-    collisionDetector.check();
+    collisionDetector.check();                                   
 
     delay(2000);
   }
