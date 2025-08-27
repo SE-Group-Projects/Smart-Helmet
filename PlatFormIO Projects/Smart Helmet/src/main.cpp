@@ -1,11 +1,26 @@
+#define BLYNK_TEMPLATE_ID "TMPL6jliNOslX"
+#define BLYNK_TEMPLATE_NAME "Smart Helmet"
+#define BLYNK_AUTH_TOKEN "F_CO_TTQUKhbjbPRwxfjGUA5n7Viq0v-"
+
 #include <Arduino.h>
+#include <BlynkSimpleEsp32.h> 
 #include "SystemManager.h"
 #include "SensorManager.h"
 #include "VentController.h"
 #include "CollisionDetector.h"
-#include "BlynkManager.h"
 //#include "SpeedMonitor.h"
  #include "BluetoothNotifier.h"
+
+
+char ssid[] = "KushanA14";
+char pass[] = "kushankabi1235";
+
+#define VPIN_TEMPERATURE V0
+#define VPIN_SPEED V1
+#define VPIN_GPS_LAT V2
+#define VPIN_GPS_LON V3
+#define VPIN_STATUS_LED V4
+#define VPIN_COLLISION V10
 
 // pinsss....................
 const int FSR_PIN = 34;
@@ -27,16 +42,11 @@ const int SIM_RX_PIN = 26;
 const int SIM_TX_PIN = 27;
 const char* EMERGENCY_PHONE_NUMBER = "+94702016212";
 
-const char* WIFI_SSID = "KushanA14";
-const char* WIFI_PASS = "kushankabi1235";
-const char* BLYNK_AUTH_TOKEN = "F_CO_TTQUKhbjbPRwxfjGUA5n7Viq0v-";
-
 // instances
 SystemManager systemManager(FSR_PIN, PRESSURE_THRESHOLD, COLLISION_IMPACT_THRESHOLD, SHUTDOWN_TIMEOUT);
 SensorManager sensorManager(GPS_TX_PIN, GPS_RX_PIN, LM75_I2C_ADDRESS);
 VentController ventController(SERVO_PIN, TEMP_THRESHOLD_HIGH, VENT_OPEN_ANGLE, VENT_CLOSED_ANGLE);
 BluetoothNotifier notifier(EMERGENCY_PHONE_NUMBER, SIM_TX_PIN, SIM_RX_PIN);
-BlynkManager blynkManager(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
 CollisionDetector collisionDetector;
 
 // Timer for sending data to Blynk to avoid flooding
@@ -54,40 +64,39 @@ void setup(){
     ventController.setup();
     collisionDetector.setup();
     notifier.setup();
-    blynkManager.setup();
-
+    Serial.println("setting up blynk");
+    Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+    Serial.println("Done");
     Serial.println("All systems initialized. Main loop starting.");
 }
 
 void loop(){
   // aways update the sytem with the pressure........
   systemManager.update();
-  blynkManager.updateSystemStatus(systemManager.isSystemOn());
 
   // only if the the system is on the other will run,,,,,,,,,,,,,,,
   if (systemManager.isSystemOn()){
-    blynkManager.run();
     // read data from the snesors.......
     sensorManager.readSensor();
+    Blynk.virtualWrite(VPIN_STATUS_LED, systemManager.isSystemOn() ? 255 : 0);
 
     // Update the vent based on the new temperature reading.......                                                 
     ventController.update(sensorManager.getTemperature());
 
     // send data to the Blynk ....
     if (millis() - lastBlynkUpdateTime > blynkUpdateInterval){
-      blynkManager.updateSensorData(
-        sensorManager.getTemperature(),
-        sensorManager.getSpeedKph(),
-        sensorManager.getLatitude(),
-        sensorManager.getLongitude(),
-        sensorManager.isGpsLocationValid()
-      );
+      Blynk.virtualWrite(VPIN_TEMPERATURE, sensorManager.getTemperature());
+      Blynk.virtualWrite(VPIN_SPEED, sensorManager.getSpeedKph());
+      if (sensorManager.isGpsLocationValid()) {
+        Blynk.virtualWrite(VPIN_GPS_LAT, sensorManager.getLatitude());
+        Blynk.virtualWrite(VPIN_GPS_LON, sensorManager.getLongitude());
+      }
       lastBlynkUpdateTime = millis();
     }
 
     //collision check .............
     if (systemManager.isCollisionDetected()) {
-      blynkManager.sendCollisionNotification();
+        Blynk.virtualWrite(VPIN_COLLISION, 1);
             if (sensorManager.isGpsLocationValid()) {
                 notifier.sendCollisionAlert(
                     sensorManager.getLatitude(),
