@@ -1,24 +1,29 @@
-#include <Wire.h>
-#include <Adafruit_BMP280.h>
+#include <Arduino.h>
+#include "SystemManager.h"
+#include "SensorManager.h"
+#include "VentController.h"
+#include "CollisionDetector.h"
+// #include "BlynkManager.h"
+// #include "SpeedMonitor.h"
+// #include "BluetoothNotifier.h"
 
-Adafruit_BMP280 bmp; // I2C interface
+// pinsss....................
+const int FSR_PIN = 34;
+const int PRESSURE_THRESHOLD = 500;
+const unsigned long SHUTDOWN_TIMEOUT = 60000;  //system time out for  1 min..
 
-void setup() {
-  Serial.begin(115200);
-  if (!bmp.begin(0x76)) { // Try 0x76 or 0x77 depending on your module
-    Serial.println("BMP280 not found. Check wiring or address!");
-    while (1);
-  }
-}
+const int GPS_RX_PIN = 16;
+const int GPS_TX_PIN = 17;
+const uint8_t LM75_I2C_ADDRESS = 0x48;
 
-void loop() {
-  Serial.print("Temperature = ");
-  Serial.print(bmp.readTemperature());
-  Serial.println(" °C");
+const int SERVO_PIN = 13;
+const float TEMP_THRESHOLD_HIGH = 30.0; // Open vent if temp > 30°C
+const int VENT_OPEN_ANGLE = 90;
+const int VENT_CLOSED_ANGLE = 0;
 
-  Serial.print("Pressure = ");
-  Serial.print(bmp.readPressure() / 100.0); // Convert to hPa
-  Serial.println(" hPa");
 
-  delay(1000);
-}
+// instances
+SystemManager systemManager(FSR_PIN, PRESSURE_THRESHOLD, SHUTDOWN_TIMEOUT);
+SensorManager sensorManager(GPS_TX_PIN, GPS_RX_PIN, LM75_I2C_ADDRESS);
+VentController ventController(SERVO_PIN, TEMP_THRESHOLD_HIGH, VENT_OPEN_ANGLE, VENT_CLOSED_ANGLE);
+CollisionDetector collisionDetector;
