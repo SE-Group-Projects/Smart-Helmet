@@ -64,4 +64,15 @@ void SensorManager::readSensor(){
     Serial.print(getSpeedKph());
     Serial.println(" KPH");
 }
+
+// getters ..........
+float SensorManager::getTemperature() const{
+    return _currentTemperature;
 }
+
+double SensorManager::getLatitude() const{
+    return _gps.location.lat();
+}
+
+
+
