@@ -22,3 +22,12 @@ void BlynkManager::setup(){
 void BlynkManager::run() {
     Blynk.run();
 }
+
+void BlynkManager::updateSystemStatus(bool isOn){
+    if(isOn){
+        Blynk.virtualWrite(VPIN_STATUS_LED, 255);
+    }else{
+        Blynk.virtualWrite(VPIN_STATUS_LED, 0);
+    }
+}
+
