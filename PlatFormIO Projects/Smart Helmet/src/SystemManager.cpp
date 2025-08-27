@@ -48,7 +48,18 @@ void SystemManager::update(){
             _collisionDetected = true;
         }
     }
+
+    //_lastFsrReading = currentFsrReading;
 }
 bool SystemManager::isSystemOn() const {
         return _isSystemOn;
-    }
+}
+
+bool SystemManager::isCollisionDetected() const {
+    return _collisionDetected;
+}
+
+void SystemManager::resetCollision() {
+    _collisionDetected = false;
+    Serial.println("Collision flag has been reset.");
+}

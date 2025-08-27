@@ -11,7 +11,7 @@ public:
     bool isSystemOn() const;
 
     bool isCollisionDetected() const;
-    void restCollision();
+    void resetCollision();
 private:
     const int _fsrPin;
     const int _pressureThreshold;
