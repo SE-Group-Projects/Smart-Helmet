@@ -16,5 +16,14 @@ class SensorManager {
         double getLongitude() const;
         double getSpeedKph() const;
         bool isGpsLocationValid() const;
-}
+
+    private:
+        // GPS detials...........................
+        int _gpsTxPin, _gpsRxPin;
+        TinyGPSPlus _gps;
+
+        // LM75 Temarature Sensor 
+        uint8_t _lm75Address;
+        float _currentTemperature; // Store the last read temperature
+};
 #endif
