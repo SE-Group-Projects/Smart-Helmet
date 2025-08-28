@@ -26,8 +26,6 @@ void BluetoothNotifier::sendCollisionAlert(double lat, double lon) {
     Serial.println("Message: " + message);
     Serial.println("-----------------------------------\n");
 
-    /*
-    // --- Code to send a REAL SMS (uncomment when ready) ---
     Serial.println("Setting SMS text mode...");
     SimSerial.println("AT+CMGF=1");
     delay(1000);
@@ -44,5 +42,10 @@ void BluetoothNotifier::sendCollisionAlert(double lat, double lon) {
     SimSerial.write(26); // Ctrl+Z
     delay(1000);
     Serial.println("SMS Sent!");
-    */
+    
+}
+
+void BluetoothNotifier::sendVoiceAlert(const char* message){
+    Serial.print("BT Alert: ");
+    Serial.println(message);
 }

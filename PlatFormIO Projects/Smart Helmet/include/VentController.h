@@ -8,6 +8,8 @@ class VentController {
         VentController(int servoPin, float tempThreshold, int openAngle, int closedAngle);
         void setup();
         void update(float currentTemperature); // get the temp..........
+        void manualOpen() { _servo.write(_openAngle); }
+        void manualClose() { _servo.write(_closedAngle); }
 
     private:
         Servo _servo;

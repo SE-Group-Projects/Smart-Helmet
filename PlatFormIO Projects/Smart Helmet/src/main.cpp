@@ -21,6 +21,11 @@ char pass[] = "kushankabi1235";
 #define VPIN_GPS_LON V3
 #define VPIN_STATUS_LED V4
 #define VPIN_COLLISION V10
+#define VPIN_VENT_CONTROL V5
+#define VPIN_SPEED_OVERRIDE V6
+
+#define SPEED_LIMIT 60.0 // km/h
+
 
 // pinsss....................
 const int FSR_PIN = 34;
@@ -76,9 +81,10 @@ void loop(){
 
   // only if the the system is on the other will run,,,,,,,,,,,,,,,
   if (systemManager.isSystemOn()){
+    Blynk.run();
     // read data from the snesors.......
     sensorManager.readSensor();
-    Blynk.virtualWrite(VPIN_STATUS_LED, systemManager.isSystemOn() ? 255 : 0);
+    Blynk.virtualWrite(VPIN_STATUS_LED, systemManager.isSystemOn() ? 1 : 0);
 
     // Update the vent based on the new temperature reading.......                                                 
     ventController.update(sensorManager.getTemperature());
@@ -87,12 +93,30 @@ void loop(){
     if (millis() - lastBlynkUpdateTime > blynkUpdateInterval){
       Blynk.virtualWrite(VPIN_TEMPERATURE, sensorManager.getTemperature());
       Blynk.virtualWrite(VPIN_SPEED, sensorManager.getSpeedKph());
+      
+      // Overspeed alert
+      if (sensorManager.getSpeedKph() > SPEED_LIMIT) {
+        notifier.sendVoiceAlert("Overspeed detected! Slow down.");
+        Blynk.logEvent("overspeed", "You are driving too fast!");
+      }
+
+      // Bend alert (example check near a hardcoded location)
+      double bendLat = 6.9271; // Example: Colombo bend point
+      double bendLon = 79.8612;
+      if (sensorManager.isGpsLocationValid() && sensorManager.getSpeedKph() > 20) {
+        double dist = sensorManager.distanceTo(bendLat, bendLon);
+        if (dist < 50) { // 50 meters
+            notifier.sendVoiceAlert("Bend ahead, please slow down.");
+        }
+      }
+
       if (sensorManager.isGpsLocationValid()) {
         Blynk.virtualWrite(VPIN_GPS_LAT, sensorManager.getLatitude());
         Blynk.virtualWrite(VPIN_GPS_LON, sensorManager.getLongitude());
       }
       lastBlynkUpdateTime = millis();
     }
+    
 
     //collision check .............
     if (systemManager.isCollisionDetected()) {
@@ -106,9 +130,34 @@ void loop(){
                 notifier.sendCollisionAlert(0, 0); 
             }
       systemManager.resetCollision();
-      delay(10000);
+      //delay(10000);
     }                            
 
     delay(2000);
+  }
+}
+
+
+ BLYNK_WRITE(VPIN_VENT_CONTROL) {
+    int value = param.asInt();   // Read the value from the app (0 or 1)
+
+      if (value == 1) {
+        ventController.manualOpen();
+        Serial.println("Vent opened via Blynk");
+      } else {
+        ventController.manualClose();
+        Serial.println("Vent closed via Blynk");
+      }
+    }
+
+    BLYNK_WRITE(VPIN_SPEED_OVERRIDE) {
+  double testSpeed = param.asDouble();
+  if (testSpeed >= 0) {
+    sensorManager.setOverrideSpeed(testSpeed);
+    Serial.print("Speed overridden to: ");
+    Serial.println(testSpeed);
+  } else {
+    sensorManager.clearOverrideSpeed();
+    Serial.println("Speed override cleared, using GPS again.");
   }
 }

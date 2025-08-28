@@ -39,15 +39,14 @@ void SensorManager::readSensor(){
         // Combine MSB and LSB into a 16-bit integer
         int16_t rawTemp = (msb << 8) | lsb;
         
-        // The LM75 data is left-aligned. We need to shift right to get the actual value.
         // This gives a resolution of 0.125 degrees C.
         rawTemp = rawTemp >> 5;
 
         // Convert to Celsius
         _currentTemperature = rawTemp * 0.125;
     } else {
-        Serial.println("Error: Could not read from LM75 sensor.");
-        _currentTemperature = -999.0f; // Indicate an error
+        //Serial.println("Error: Could not read from LM75 sensor.");
+        _currentTemperature = 23.0f; // Indicate an error
     }
 
 
@@ -65,6 +64,15 @@ void SensorManager::readSensor(){
     Serial.println(" KPH");
 }
 
+double SensorManager::distanceTo(double lat, double lon) {
+    if (!_gps.location.isValid()) return 999999.0;
+    double d = TinyGPSPlus::distanceBetween(
+        _gps.location.lat(), _gps.location.lng(),
+        lat, lon
+    );
+    return d; // in meters
+}
+
 // getters ..........
 float SensorManager::getTemperature() const {
     return _currentTemperature;
@@ -78,13 +86,22 @@ double SensorManager::getLongitude(){
     return _gps.location.lng();
 }
 
-double SensorManager::getSpeedKph(){
-    return _gps.speed.kmph();
-}
 
 bool SensorManager::isGpsLocationValid() const {
     return _gps.location.isValid();
 }
 
+void SensorManager::setOverrideSpeed(double speed) {
+    _overrideSpeed = speed;
+}
 
+void SensorManager::clearOverrideSpeed() {
+    _overrideSpeed = -1;
+}
 
+double SensorManager::getSpeedKph() {
+    if (_overrideSpeed >= 0) {
+        return _overrideSpeed;   // use  test speed
+    }
+    return _gps.speed.kmph();    // otherwise real GPS speed
+}

@@ -35,4 +35,5 @@ void VentController::update(float currentTemperature) {
         _isVentOpen = false;
         Serial.println("  -> Temp low. Closing vent.");
     }
+
 }

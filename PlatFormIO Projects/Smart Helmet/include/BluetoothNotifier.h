@@ -8,7 +8,7 @@ public:
     BluetoothNotifier(const char* phoneNumber, int simTxPin, int simRxPin);
     void setup();
     void sendCollisionAlert(double lat, double lon);
-
+    void sendVoiceAlert(const char* message);
 private:
     const char* _phoneNumber;
     int _simTxPin, _simRxPin;
