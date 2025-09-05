@@ -6,7 +6,7 @@
 
 class SensorManager {
     public:
-        SensorManager(int gpsTxPin, int gpsRxPin, uint8_t lm75Address);
+        SensorManager(int gpsTxPin, int gpsRxPin, uint8_t lm75Address); 
 
         void setup();
         void readSensor();
@@ -28,5 +28,7 @@ class SensorManager {
         // LM75 Temarature Sensor 
         uint8_t _lm75Address;
         float _currentTemperature; // Store the last read temperature
+        bool _overrideTempEnabled = false;
+        float _overrideTemp = 0.0f;
 };
 #endif

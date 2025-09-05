@@ -1,16 +1,18 @@
 #include "BluetoothNotifier.h"
+#include <HardwareSerial.h>
 
 // Use ESP32's HardwareSerial port 1 for the SIM800L
-HardwareSerial& SimSerial = Serial1;
+HardwareSerial sim800(1);
 
 BluetoothNotifier::BluetoothNotifier(const char* phoneNumber, int simTxPin, int simRxPin)
     : _phoneNumber(phoneNumber), _simTxPin(simTxPin), _simRxPin(simRxPin) {}
 
 void BluetoothNotifier::setup() {
     // Start the hardware serial port for the SIM800L module
-    SimSerial.begin(9600, SERIAL_8N1, _simRxPin, _simTxPin);
+    sim800.begin(9600, SERIAL_8N1, _simRxPin, _simTxPin);
     Serial.println("Hardware Serial for SIM800L started.");
     Serial.println("Alert Notifier initialized.");
+    Serial.println("SIM800L ready to send SMS.");   
 }
 
 void BluetoothNotifier::sendCollisionAlert(double lat, double lon) {
@@ -27,20 +29,20 @@ void BluetoothNotifier::sendCollisionAlert(double lat, double lon) {
     Serial.println("-----------------------------------\n");
 
     Serial.println("Setting SMS text mode...");
-    SimSerial.println("AT+CMGF=1");
+    sim800.println("AT+CMGF=1");
     delay(1000);
 
     Serial.println("Sending SMS to: " + String(_phoneNumber));
-    SimSerial.print("AT+CMGS=\"");
-    SimSerial.print(_phoneNumber);
-    SimSerial.println("\"");
+    sim800.print("AT+CMGS=\"");
+    sim800.print(_phoneNumber);
+    sim800.println("\"");
     delay(1000);
     
-    SimSerial.print(message);
+    sim800.print(message);
     delay(1000);
 
-    SimSerial.write(26); // Ctrl+Z
-    delay(1000);
+    sim800.write(26); // Ctrl+Z
+    delay(5000);
     Serial.println("SMS Sent!");
     
 }

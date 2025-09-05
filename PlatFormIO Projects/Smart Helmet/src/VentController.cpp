@@ -16,7 +16,7 @@ void VentController::setup() {
     ESP32PWM::allocateTimer(3);
 
     _servo.setPeriodHertz(50); // Standard servo frequency
-    _servo.attach(_servoPin, 500, 2500); // Attach the servo on the specified pin
+    _servo.attach(_servoPin, 500, 2500); 
 
     // Start with the vent closed
     _servo.write(_closedAngle);
@@ -36,4 +36,16 @@ void VentController::update(float currentTemperature) {
         Serial.println("  -> Temp low. Closing vent.");
     }
 
+}
+
+void VentController::manualOpen() {
+    _servo.write(_openAngle);
+    _isVentOpen = true;
+    Serial.println("  -> Manual override: Vent opened.");
+}
+
+void VentController::manualClose() {
+    _servo.write(_closedAngle);
+    _isVentOpen = false;
+    Serial.println("  -> Manual override: Vent closed.");
 }

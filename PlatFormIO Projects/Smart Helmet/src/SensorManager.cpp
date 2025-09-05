@@ -46,7 +46,7 @@ void SensorManager::readSensor(){
         _currentTemperature = rawTemp * 0.125;
     } else {
         //Serial.println("Error: Could not read from LM75 sensor.");
-        _currentTemperature = 23.0f; // Indicate an error
+        _currentTemperature = 21.0f; // Indicate an error
     }
 
 

@@ -23,15 +23,18 @@ char pass[] = "kushankabi1235";
 #define VPIN_COLLISION V10
 #define VPIN_VENT_CONTROL V5
 #define VPIN_SPEED_OVERRIDE V6
+#define VPIN_TEMP_OVERRIDE V8
 
-#define SPEED_LIMIT 60.0 // km/h
+
+#define SPEED_LIMIT 40.0 // km/h
+bool overSpeedNotified = false; 
 
 
 // pinsss....................
 const int FSR_PIN = 34;
 const int PRESSURE_THRESHOLD = 100;
 const int COLLISION_IMPACT_THRESHOLD = 500;
-const unsigned long SHUTDOWN_TIMEOUT = 200000;  //system time out for  1 min..
+const unsigned long SHUTDOWN_TIMEOUT = 100000;  //system time out for  1 min..
 
 const int GPS_RX_PIN = 16;
 const int GPS_TX_PIN = 17;
@@ -98,6 +101,13 @@ void loop(){
       if (sensorManager.getSpeedKph() > SPEED_LIMIT) {
         notifier.sendVoiceAlert("Overspeed detected! Slow down.");
         Blynk.logEvent("overspeed", "You are driving too fast!");
+        Blynk.virtualWrite(V9, " Over Speed!");
+        overSpeedNotified = true;
+      }
+      else if (sensorManager.getSpeedKph() <= SPEED_LIMIT) {
+        // Clear label when speed goes back to safe
+        Blynk.virtualWrite(V9, "Safe Speed ");
+        overSpeedNotified = false;
       }
 
       // Bend alert (example check near a hardcoded location)
@@ -124,7 +134,7 @@ void loop(){
             if (sensorManager.isGpsLocationValid()) {
                 notifier.sendCollisionAlert(
                     sensorManager.getLatitude(),
-                    sensorManager.getLongitude()
+                    sensorManager.getLongitude() 
                 );
             } else {
                 notifier.sendCollisionAlert(0, 0); 
@@ -136,7 +146,26 @@ void loop(){
     delay(2000);
   }
 }
+BLYNK_WRITE(VPIN_SPEED_OVERRIDE) {
+  double testSpeed = param.asDouble();
 
+  if (testSpeed >= 0) {
+    sensorManager.setOverrideSpeed(testSpeed);
+    Serial.print("Test speed override set to: ");
+    Serial.println(testSpeed);
+  } else {
+    sensorManager.clearOverrideSpeed();
+    Serial.println("Speed override cleared. Using GPS speed.");
+  }
+}
+
+
+BLYNK_WRITE(VPIN_TEMP_OVERRIDE) {
+  float testTemp = param.asFloat();
+  Serial.print("Test temperature override set to: ");
+  Serial.println(testTemp);
+  ventController.update(testTemp);
+}
 
  BLYNK_WRITE(VPIN_VENT_CONTROL) {
     int value = param.asInt();   // Read the value from the app (0 or 1)
@@ -149,15 +178,3 @@ void loop(){
         Serial.println("Vent closed via Blynk");
       }
     }
-
-    BLYNK_WRITE(VPIN_SPEED_OVERRIDE) {
-  double testSpeed = param.asDouble();
-  if (testSpeed >= 0) {
-    sensorManager.setOverrideSpeed(testSpeed);
-    Serial.print("Speed overridden to: ");
-    Serial.println(testSpeed);
-  } else {
-    sensorManager.clearOverrideSpeed();
-    Serial.println("Speed override cleared, using GPS again.");
-  }
-}
