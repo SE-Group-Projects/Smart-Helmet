@@ -159,12 +159,17 @@ BLYNK_WRITE(VPIN_SPEED_OVERRIDE) {
   }
 }
 
-
 BLYNK_WRITE(VPIN_TEMP_OVERRIDE) {
   float testTemp = param.asFloat();
-  Serial.print("Test temperature override set to: ");
-  Serial.println(testTemp);
-  ventController.update(testTemp);
+
+  if (testTemp >= 0) {
+    sensorManager.setOverrideTemperature(testTemp);
+    Serial.print("Test temperature override set to: ");
+    Serial.println(testTemp);
+  } else {
+    sensorManager.clearOverrideTemperature();
+    Serial.println("Temperature override cleared. Using real sensor.");
+  }
 }
 
  BLYNK_WRITE(VPIN_VENT_CONTROL) {
