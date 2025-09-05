@@ -75,7 +75,19 @@ double SensorManager::distanceTo(double lat, double lon) {
 
 // getters ..........
 float SensorManager::getTemperature() const {
+    if (_overrideTempEnabled){
+        return _overrideTemp
+    }
     return _currentTemperature;
+}
+
+void SensorManager::setOverrideTemperature(float temp){
+    _overrideTempEnabled = true;
+    _overrideTemp = temp;
+}
+
+void SensorManager::clearOverrideTemperature() {
+    _overrideTempEnabled = false;
 }
 
 double SensorManager::getLatitude(){

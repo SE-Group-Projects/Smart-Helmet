@@ -19,6 +19,9 @@ class SensorManager {
         bool isGpsLocationValid() const;
         void setOverrideSpeed(double speed);  
         void clearOverrideSpeed();
+        void setOverrideTemperature(float temp);
+        void clearOverrideTemperature();
+
 
     private:
         // GPS detials...........................
