@@ -44,3 +44,21 @@ libraries scanning project source files.
 
 More information about PlatformIO Library Dependency Finder
 - https://docs.platformio.org/page/librarymanager/ldf.html
+
+
+
+/project-root
+│
+├── /lib
+│   ├── VL53L0X_Sensor/
+│   │   ├── vl53l0x.h
+│   │   └── vl53l0x.cpp
+│   ├── LM75_Temperature/
+│   │   ├── lm75.h
+│   │   └── lm75.cpp
+│   └── GPS_Module/
+│       ├── gps.h
+│       └── gps.cpp
+│
+├── main.cpp
+└── platformio.ini (if using PlatformIO)
