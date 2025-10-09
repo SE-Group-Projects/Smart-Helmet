@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 
-
 @Composable
 fun SettingsContent(
     onProfileClick: () -> Unit,
@@ -39,16 +38,28 @@ fun SettingsContent(
             .background(Color.White)
             .padding(16.dp)
     ) {
-        // ---------- Title ----------
-        Text(
-            text = "Settings",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1B3C53),
+        // ---------- Title with Icon ----------
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
                 .padding(vertical = 16.dp)
-        )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+                tint = Color(0xFF1B3C53),
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Settings",
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B3C53)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 

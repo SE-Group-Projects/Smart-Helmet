@@ -72,9 +72,26 @@ fun ProfileScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF6F6F6))
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        // ---------- Page Heading ----------
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Profile & Health Info",
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryColor
+                )
+            }
+        }
+
         // ---------- Profile Picture ----------
         item {
             Card(
@@ -93,7 +110,7 @@ fun ProfileScreen() {
                         modifier = Modifier.size(120.dp),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        // Normal profile icon without gradient
+                        // Profile icon
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Profile Placeholder",
@@ -102,7 +119,7 @@ fun ProfileScreen() {
                                 .size(120.dp)
                                 .clip(CircleShape)
                         )
-                        // Camera edit icon
+                        // Camera icon
                         Icon(
                             imageVector = Icons.Default.CameraAlt,
                             contentDescription = "Edit Picture",
@@ -121,7 +138,7 @@ fun ProfileScreen() {
                         onValueChange = { username = it },
                         label = { Text("Username") },
                         colors = fieldColors,
-                        textStyle = TextStyle(color = primaryColor), // Input text color
+                        textStyle = TextStyle(color = primaryColor),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(12.dp))

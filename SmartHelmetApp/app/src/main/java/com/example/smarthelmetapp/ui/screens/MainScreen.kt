@@ -67,10 +67,10 @@ fun MainScreen() {
                 navController = navController,
                 startDestination = "dashboard"
             ) {
-                composable("dashboard") { PageContent("Dashboard Overview") }
-                composable("location") { PageContent("Location Page") }
-                composable("alerts") { PageContent("Alerts Page") }
-                composable("temperature") { PageContent("Temperature Page") }
+                composable("dashboard") { DashboardScreen() }
+                composable("location") { LocationScreen() }
+                composable("alerts") { AlertsScreen() }
+                composable("temperature") { TemperatureScreen() }
 
                 // Settings page
                 composable("settings") {
