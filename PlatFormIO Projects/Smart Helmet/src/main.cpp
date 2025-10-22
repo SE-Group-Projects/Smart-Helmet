@@ -42,7 +42,7 @@ const uint8_t LM75_I2C_ADDRESS = 0x48;
 
 const int SERVO_PIN = 13;
 const float TEMP_THRESHOLD_HIGH = 30.0; // Open vent if temp > 30°C
-const int VENT_OPEN_ANGLE = 90;
+const int VENT_OPEN_ANGLE = 90;   
 const int VENT_CLOSED_ANGLE = 0;
 
 // Alert Notifier (SIM800L)

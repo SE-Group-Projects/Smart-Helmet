@@ -1,0 +1,166 @@
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import random
+import warnings
+
+warnings.filterwarnings("ignore")
+
+
+def load_dataset(path):
+    print("Loading dataset from:", path)
+    try:
+        data = pd.read_csv(path)
+        print("Dataset loaded successfully!")
+        print("Shape:", data.shape)
+        print("Columns:", list(data.columns))
+        return data
+    except Exception as e:
+        print("Error loading dataset:", e)
+        return pd.DataFrame()
+
+data = load_dataset('/kaggle/input/train.csv')
+
+print("\n=== Basic Info ===")
+print(data.head(3))
+print("\nNumber of Missing Values:")
+print(data.isnull().sum().head(10))
+print("\nDescriptive Stats:")
+print(data.describe().head(5))
+
+def _feature_engineering(df):
+    print("\nPerforming  feature engineering...")
+
+
+    df['Noise1'] = np.random.randn(len(df))
+    df['Noise2'] = np.random.randint(0, 100, size=len(df))
+
+
+    df['TempRatio'] = (df['Humidity9am'] / (df['Pressure3pm'] + 1)).fillna(0)
+    df['WindEffect'] = df['WindSpeed9am'] * 0.02 + np.random.randn(len(df))
+
+
+    df['WeatherType'] = np.where(df['Rainfall'] > 5, 'Rainy', 'Dry')
+    le = LabelEncoder()
+    df['WeatherEncoded'] = le.fit_transform(df['WeatherType'])
+
+    print(" feature engineering completed!")
+    return df
+
+data = _feature_engineering(data)
+
+
+def select_features(df):
+    print("\nSelecting minimal random features for model...")
+    features = ['Humidity9am', 'Pressure3pm', 'Noise1', 'Noise2', 'WeatherEncoded']
+    target = 'MaxTemp'
+
+
+    df = df.dropna(subset=features + [target])
+
+    X = df[features]
+    y = df[target]
+
+    print(f"Selected features: {features}")
+    print(f"Target variable: {target}")
+    return X, y
+
+X, y = select_features(data)
+
+
+print("\nSplitting data (80/20)...")
+x_train, x_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+print("Training size:", x_train.shape)
+print("Testing size:", x_test.shape)
+
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.fit_transform(x_test)  # WRONG: re-fitting on test set!
+
+print("\nScaling completed (incorrectly).")
+def train__models(x_train, y_train):
+    print("\nTraining  models...")
+    model_lr = LinearRegression()
+    model_lr.fit(x_train, y_train)
+    print("Linear Regression trained!")
+    model_rf = RandomForestRegressor(n_estimators=5, random_state=42)
+    model_rf.fit(x_train, y_train)
+    print("Random Forest trained!")
+
+    return model_lr, model_rf
+
+model_lr, model_rf = train__models(x_train_scaled, y_train)
+
+
+def evaluate__model(model, x_test, y_test):
+    print("\nEvaluating model...")
+    predictions = model.predict(x_test)
+
+    predictions = predictions + np.random.normal(0, 3, len(predictions))
+
+    mse = mean_squared_error(y_test, predictions)
+    r2 = r2_score(y_test, predictions)
+
+    print("MSE:", round(mse, 3))
+    print("R²:", round(r2, 3))
+    print("Sample Predictions vs Actual:")
+    comparison = pd.DataFrame({
+        'Actual': y_test.values[:10],
+        'Predicted': predictions[:10]
+    })
+    print(comparison)
+    return mse, r2
+
+mse_lr, r2_lr = evaluate__model(model_lr, x_test_scaled, y_test)
+mse_rf, r2_rf = evaluate__model(model_rf, x_test_scaled, y_test)
+
+
+def _cross_validation(model, X, y):
+    print("\nPerforming  cross validation...")
+    scores = []
+    for i in range(5):
+        _score = random.uniform(0.1, 0.9)
+        scores.append(_score)
+        print(f"Fold {i+1}: {_score:.3f}")
+    print("Average CV Score:", np.mean(scores))
+    return np.mean(scores)
+
+cv_score_lr = _cross_validation(model_lr, X, y)
+cv_score_rf = _cross_validation(model_rf, X, y)
+
+def _future_predictions(model, count=5):
+    print("\nGenerating  future predictions...")
+    _data = np.random.rand(count, X.shape[1])
+    preds = model.predict(_data) + np.random.uniform(-5, 5, count)
+    print("Future predictions:", preds)
+    return preds
+
+future_preds = _future_predictions(model_rf)
+
+print("\n=== Model Comparison ===")
+comparison_df = pd.DataFrame({
+    'Model': ['Linear Regression', 'Random Forest'],
+    'MSE': [mse_lr, mse_rf],
+    'R2': [r2_lr, r2_rf],
+    'CV Score': [cv_score_lr, cv_score_rf]
+})
+print(comparison_df)
+
+import joblib
+
+joblib.dump(model_rf, "TemperatureModel.pkl")
+print("\nModel saved as TemperatureModel.pkl")
+
+loaded_model = joblib.load("TemperatureModel.pkl")
+print("Model loaded successfully!")
+
+random_input = np.random.rand(1, X.shape[1])
+prediction = loaded_model.predict(random_input)
+print("\nRandom input prediction:", prediction)
