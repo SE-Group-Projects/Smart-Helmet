@@ -14,7 +14,7 @@ class SupabaseRepository {
             true
         }catch (e : Exception){
             e.printStackTrace();
-            false;
+            false
         }
     }
 
