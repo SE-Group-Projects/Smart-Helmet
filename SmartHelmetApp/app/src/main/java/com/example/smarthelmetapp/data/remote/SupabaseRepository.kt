@@ -18,6 +18,19 @@ class SupabaseRepository {
         }
     }
 
+    suspend fun signIn(email: String, password: String): Boolean {
+        return try {
+            client.auth.signInWith( io.github.jan.supabase.gotrue.providers.builtin.Email) {
+                this.email = email
+                this.password = password
+            }
+            true
+        }catch (e: Exception){
+            e.printStackTrace()
+            false
+        }
+    }
+
     suspend fun getCurrentSession() : UserSession? {
         return try{
             client.auth.currentSessionOrNull()
@@ -26,5 +39,11 @@ class SupabaseRepository {
         }
     }
 
-
+    suspend fun signOut() {
+        try{
+            client.auth.signOut()
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.smarthelmetapp.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,9 +22,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smarthelmetapp.R
+import com.example.smarthelmetapp.data.remote.SupabaseRepository
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
+    val scope = rememberCoroutineScope();
+    val context = LocalContext.current
+    val repo = remember { SupabaseRepository() }
+
     var isLogin by remember { mutableStateOf(true) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -143,7 +151,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { onLoginSuccess() },
+                        onClick = {
+                            scope.launch {
+                                val success = repo.signIn(email, password)
+                                if (success){
+                                    Toast.makeText(context, "Login Successfull!", Toast.LENGTH_SHORT).show()
+                                    onLoginSuccess()
+                                }else{
+                                    Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                                  },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
@@ -222,7 +240,10 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* TODO */ },
+                        onClick = {
+                            scope.launch {
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
