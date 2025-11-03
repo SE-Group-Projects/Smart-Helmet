@@ -31,7 +31,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     val context = LocalContext.current
     val repo = remember { SupabaseRepository() }
 
-    var isLogin by remember { mutableStateOf(false) }
+    var isLogin by remember { mutableStateOf(true) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
@@ -242,13 +242,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     Button(
                         onClick = {
                             scope.launch {
-                                val success = repo.signUp(email, password, fullName)
-                                if (success){
-                                    Toast.makeText(context, "Account Created! Please Login.", Toast.LENGTH_SHORT).show()
-                                    isLogin = true
-                                }else{
-                                    Toast.makeText(context, "Error Creating Account.", Toast.LENGTH_SHORT).show()
-                                }
                             }
                         },
                         modifier = Modifier
