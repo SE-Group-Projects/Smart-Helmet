@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -82,4 +83,26 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     kapt(libs.dagger.hilt.compiler)
 
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.4.1")    // Auth
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.1") // Database
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.4.1")   // File Storage
+    implementation ("io.github.jan-tennert.supabase:realtime-kt:2.4.0")
+
+    // --- Logging (Optional but useful) ---
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+
+    // Lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
+
+    // --- Testing ---
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
