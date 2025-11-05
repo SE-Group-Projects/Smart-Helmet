@@ -1,3 +1,4 @@
+
 package com.example.smarthelmetapp.ui.screens
 
 import android.widget.Toast
@@ -21,22 +22,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthelmetapp.R
-import com.example.smarthelmetapp.data.remote.SupabaseRepository
-import kotlinx.coroutines.launch
+import com.example.smarthelmetapp.ui.viewmodel.HelmetViewModel
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
-    val scope = rememberCoroutineScope();
+    val viewModel: HelmetViewModel = viewModel()
     val context = LocalContext.current
-    val repo = remember { SupabaseRepository() }
 
-    var isLogin by remember { mutableStateOf(false) }
+    var isLogin by remember { mutableStateOf(true) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     val primaryColor = Color(0xFF1B3C53)
 
@@ -48,7 +49,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         unfocusedLabelColor = primaryColor
     )
 
-    val inputTextStyle = TextStyle(color = primaryColor) // Input text color
+    val inputTextStyle = TextStyle(color = primaryColor)
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Background
@@ -131,13 +132,15 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     .imePadding()
             ) {
                 if (isLogin) {
+                    // Login Form
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -147,58 +150,78 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Button(
                         onClick = {
-                            scope.launch {
-                                val success = repo.signIn(email, password)
-                                if (success){
-                                    Toast.makeText(context, "Login Successfull!", Toast.LENGTH_SHORT).show()
+                            if (email.isBlank() || password.isBlank()) {
+                                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                                return@Button
+                            }
+                            isLoading = true
+                            viewModel.signIn(email, password) { success ->
+                                isLoading = false
+                                if (success) {
+                                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
                                     onLoginSuccess()
-                                }else{
+                                } else {
                                     Toast.makeText(context, "Invalid Credentials!", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                                  },
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
+                        enabled = !isLoading
                     ) {
-                        Text(
-                            "Login",
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = Color.White
+                            )
+                        } else {
+                            Text(
+                                "Login",
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Forgot Password?",
                         color = Color.Blue,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { }
+                            .clickable {
+                                Toast.makeText(context, "Feature coming soon!", Toast.LENGTH_SHORT).show()
+                            }
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Don’t have an account? Sign Up",
+                        text = "Don't have an account? Sign Up",
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { isLogin = false }
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 } else {
+                    // Sign Up Form
                     OutlinedTextField(
                         value = fullName,
                         onValueChange = { fullName = it },
                         label = { Text("Full Name") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -207,7 +230,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -216,7 +240,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         label = { Text("Phone Number") },
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -226,7 +251,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -236,33 +262,59 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         colors = fieldColors,
-                        textStyle = inputTextStyle
+                        textStyle = inputTextStyle,
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Button(
                         onClick = {
-                            scope.launch {
-                                val success = repo.signUp(email, password, fullName)
-                                if (success){
-                                    Toast.makeText(context, "Account Created! Please Login.", Toast.LENGTH_SHORT).show()
-                                    isLogin = true
-                                }else{
-                                    Toast.makeText(context, "Error Creating Account.", Toast.LENGTH_SHORT).show()
+                            when {
+                                fullName.isBlank() || email.isBlank() ||
+                                        phone.isBlank() || password.isBlank() -> {
+                                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                                }
+                                password != confirmPassword -> {
+                                    Toast.makeText(context, "Passwords don't match", Toast.LENGTH_SHORT).show()
+                                }
+                                password.length < 6 -> {
+                                    Toast.makeText(context, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    isLoading = true
+                                    viewModel.signUp(email, password, fullName, phone) { success ->
+                                        isLoading = false
+                                        if (success) {
+                                            Toast.makeText(context, "Account Created Successfully!", Toast.LENGTH_SHORT).show()
+                                            onLoginSuccess()
+                                        } else {
+                                            Toast.makeText(context, "Sign up failed. Email may already exist.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
                                 }
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
+                        enabled = !isLoading
                     ) {
-                        Text(
-                            "Create Account",
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = Color.White
+                            )
+                        } else {
+                            Text(
+                                "Create Account",
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Already have an account? Login",

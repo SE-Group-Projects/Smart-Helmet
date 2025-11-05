@@ -1,3 +1,4 @@
+// File: app/src/main/java/com/example/smarthelmetapp/ui/screens/DashboardScreen.kt
 package com.example.smarthelmetapp.ui.screens
 
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,23 +20,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
-
-data class DashboardItem(
-    val title: String,
-    val value: String,
-    val icon: ImageVector,
-    val type: String = "normal"
-)
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smarthelmetapp.ui.viewmodel.HelmetViewModel
 
 @Composable
 fun DashboardScreen() {
-    // ---------- State variables for real-time updates ----------
-    var helmetStatus by remember { mutableStateOf("Worn") }
-    var batteryLevel by remember { mutableStateOf(0.87f) } // 87%
-    var speed by remember { mutableStateOf("62 km/h") }
-    var temperature by remember { mutableStateOf("31°C") }
-    var location by remember { mutableStateOf("Colombo") }
-    var alerts by remember { mutableStateOf("None") }
+    val viewModel: HelmetViewModel = viewModel()
+    val dashboardState by viewModel.dashboardState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -43,9 +34,9 @@ fun DashboardScreen() {
             .background(Color(0xFFF6F8FA))
             .padding(horizontal = 16.dp)
     ) {
-        Spacer(modifier = Modifier.height(24.dp)) // Move everything slightly down
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // ---------- Page Heading with Dashboard icon ----------
+        // Page Heading with Dashboard icon
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
@@ -68,66 +59,105 @@ fun DashboardScreen() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Space before cards
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // ---------- Helmet Status card ----------
-        StatusCard(
-            title = "Helmet Status",
-            value = helmetStatus,
-            icon = Icons.Default.Verified,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // ---------- 2x2 grid ----------
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            BatteryDonutCard(
-                title = "Battery Level",
-                value = batteryLevel,
-                percentageText = "${(batteryLevel * 100).toInt()}%",
-                modifier = Modifier.weight(1f)
-            )
+        if (dashboardState.isLoading) {
+            // Loading indicator
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFF1B3C53))
+            }
+        } else {
+            // Helmet Status card
             StatusCard(
-                title = "Speed",
-                value = speed,
-                icon = Icons.Default.Speed,
-                modifier = Modifier.weight(1f)
+                title = "Helmet Status",
+                value = dashboardState.helmetStatus,
+                icon = Icons.Default.Verified,
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 2x2 grid
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                BatteryDonutCard(
+                    title = "Battery Level",
+                    value = dashboardState.batteryLevel,
+                    percentageText = "${(dashboardState.batteryLevel * 100).toInt()}%",
+                    modifier = Modifier.weight(1f)
+                )
+                StatusCard(
+                    title = "Speed",
+                    value = dashboardState.speed,
+                    icon = Icons.Default.Speed,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                StatusCard(
+                    title = "Temperature",
+                    value = dashboardState.temperature,
+                    icon = Icons.Default.Thermostat,
+                    modifier = Modifier.weight(1f)
+                )
+                StatusCard(
+                    title = "Location",
+                    value = dashboardState.location,
+                    icon = Icons.Default.LocationOn,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Connection Status Indicator
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = if (dashboardState.isHelmetConnected)
+                        Color(0xFF4CAF50) else Color(0xFFFF9800)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = if (dashboardState.isHelmetConnected)
+                            Icons.Default.Bluetooth else Icons.Default.BluetoothDisabled,
+                        contentDescription = "Connection Status",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = if (dashboardState.isHelmetConnected)
+                            "Helmet Connected - Real-time Data"
+                        else
+                            "Using Phone Sensors",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            StatusCard(
-                title = "Temperature",
-                value = temperature,
-                icon = Icons.Default.Thermostat,
-                modifier = Modifier.weight(1f)
-            )
-            StatusCard(
-                title = "Location",
-                value = location,
-                icon = Icons.Default.LocationOn,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // ---------- Alerts card ----------
-        StatusCard(
-            title = "Alerts",
-            value = alerts,
-            icon = Icons.Default.Warning,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
@@ -146,7 +176,12 @@ fun StatusCard(title: String, value: String, icon: ImageVector, modifier: Modifi
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(icon, contentDescription = title, tint = Color(0xFF1B3C53), modifier = Modifier.size(36.dp))
+            Icon(
+                icon,
+                contentDescription = title,
+                tint = Color(0xFF1B3C53),
+                modifier = Modifier.size(36.dp)
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = title,
@@ -168,8 +203,12 @@ fun StatusCard(title: String, value: String, icon: ImageVector, modifier: Modifi
 }
 
 @Composable
-fun BatteryDonutCard(title: String, value: Float, percentageText: String, modifier: Modifier = Modifier) {
-    // Animate battery changes smoothly
+fun BatteryDonutCard(
+    title: String,
+    value: Float,
+    percentageText: String,
+    modifier: Modifier = Modifier
+) {
     val animatedValue by animateFloatAsState(targetValue = value)
 
     Card(
