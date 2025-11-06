@@ -1,20 +1,12 @@
 // File: app/src/main/java/com/example/smarthelmetapp/ui/screens/DashboardScreen.kt
 package com.example.smarthelmetapp.ui.screens
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
@@ -216,48 +208,3 @@ fun BatteryDonutCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier.height(120.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = title,
-                color = Color(0xFF1B3C53),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(60.dp)) {
-                Canvas(modifier = Modifier.size(60.dp)) {
-                    val stroke = Stroke(width = 8f, cap = StrokeCap.Round)
-                    // Background circle
-                    drawArc(
-                        color = Color(0xFF94B4C1),
-                        startAngle = -90f,
-                        sweepAngle = 360f,
-                        useCenter = false,
-                        style = stroke
-                    )
-                    // Foreground arc (animated)
-                    drawArc(
-                        color = Color(0xFF1B3C53),
-                        startAngle = -90f,
-                        sweepAngle = 360 * animatedValue,
-                        useCenter = false,
-                        style = stroke
-                    )
-                }
-                Text(
-                    text = percentageText,
-                    color = Color(0xFF1B3C53),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
-}
