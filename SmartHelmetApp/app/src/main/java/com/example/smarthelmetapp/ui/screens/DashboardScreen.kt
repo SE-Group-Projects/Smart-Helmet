@@ -208,3 +208,5 @@ fun BatteryDonutCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier.height(120.dp)
+    )
+}

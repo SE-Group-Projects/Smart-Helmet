@@ -85,7 +85,8 @@ dependencies {
 
     // 🧩 Supabase SDK (Latest)
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.1"))
-    implementation("io.github.jan-tennert.supabase:gotrue-kt")     // Auth
+//    implementation("io.github.jan-tennert.supabase:gotrue-kt")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.0.0")// Auth
     implementation("io.github.jan-tennert.supabase:postgrest-kt")  // Database
     implementation("io.github.jan-tennert.supabase:storage-kt")    // File storage
     implementation("io.github.jan-tennert.supabase:realtime-kt")   // Live data
