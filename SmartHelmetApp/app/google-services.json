@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "449361348476",
+    "project_id": "smart-helmet-fea95",
+    "storage_bucket": "smart-helmet-fea95.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449361348476:android:a7f2a168cb99b20cb806f9",
+        "android_client_info": {
+          "package_name": "com.example.smarthelmetapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv-VqTX_dyApXitR_myAwMrCgIFJcKz4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
