@@ -2,8 +2,6 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
-        maven("https://jitpack.io")
     }
     plugins {
         id("com.google.dagger.hilt.android") version "2.48"

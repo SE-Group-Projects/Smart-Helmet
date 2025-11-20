@@ -1,9 +1,5 @@
-package com.example.smarthelmetapp
+package com.example.myapplication
 
-import com.example.smarthelmetapp.util.auth.HomeScreen
-import com.example.smarthelmetapp.util.auth.LoginScreen
-import com.example.smarthelmetapp.util.auth.RegisterScreen
-import com.example.smarthelmetapp.util.viewmodel.AuthViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,10 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.ui.auth.HomeScreen
+import com.example.myapplication.ui.auth.LoginScreen
+import com.example.myapplication.ui.auth.RegisterScreen
+import com.example.myapplication.viewmodel.AuthViewModel
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
 
         setContent {
@@ -50,7 +52,11 @@ fun AppNav() {
         composable("login") {
             LoginScreen(
                 viewModel = viewModel,
-                onLoginSuccess = { navController.navigate("home") },
+                onLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true } // prevents back navigation to login
+                    }
+                },
                 onNavigateToRegister = { navController.navigate("register") }
             )
         }
@@ -58,13 +64,17 @@ fun AppNav() {
         composable("register") {
             RegisterScreen(
                 viewModel = viewModel,
-                onRegisterSuccess = { navController.navigate("home") },
+                onRegisterSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("register") { inclusive = true } // prevents back navigation to register
+                    }
+                },
                 onNavigateToLogin = { navController.popBackStack() }
             )
         }
 
         composable("home") {
-            HomeScreen()
+            HomeScreen(navController = navController) // pass NavController for logout
         }
     }
 }
