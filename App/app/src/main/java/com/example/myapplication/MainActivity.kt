@@ -4,77 +4,59 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.ui.auth.HomeScreen
-import com.example.myapplication.ui.auth.LoginScreen
-import com.example.myapplication.ui.auth.RegisterScreen
-import com.example.myapplication.viewmodel.AuthViewModel
-import com.google.firebase.FirebaseApp
+import com.example.myapplication.ui.auth.*
+import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.screens.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
 
         setContent {
-            App()
+            MyApplicationTheme {
+                val navController = rememberNavController()
+                AppNavHost(navController)
+            }
         }
     }
 }
 
 @Composable
-fun App() {
-    MaterialTheme {
-        Surface {
-            AppNav()
-        }
-    }
-}
-
-@Composable
-fun AppNav() {
-    val navController = rememberNavController()
-
-    // Shared ViewModel for both login and register
-    val viewModel = AuthViewModel()
-
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-
-        composable("login") {
-            LoginScreen(
-                viewModel = viewModel,
-                onLoginSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true } // prevents back navigation to login
-                    }
-                },
-                onNavigateToRegister = { navController.navigate("register") }
-            )
+fun AppNavHost(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "loading") {
+        // Loading Screen
+        composable("loading") {
+            LoadingScreen(onLoadingFinished = {
+                navController.navigate("login") {
+                    popUpTo("loading") { inclusive = true }
+                }
+            })
         }
 
-        composable("register") {
-            RegisterScreen(
-                viewModel = viewModel,
-                onRegisterSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("register") { inclusive = true } // prevents back navigation to register
-                    }
-                },
-                onNavigateToLogin = { navController.popBackStack() }
-            )
+        // Login Screen
+//        composable("login") {
+//            LoginScreen(
+//                onLoginSuccess = {
+//                    navController.navigate("main") {
+//                        popUpTo("login") { inclusive = true }
+//                    }
+//                }
+//            )
+//        }
+
+        // ✅ Main Screen (contains dashboard + bottom nav)
+        // Dashboard composable should be REMOVED
+// Instead, after login → go to "main"
+
+        composable("main") {
+            MainScreen()
         }
 
-        composable("home") {
-            HomeScreen(navController = navController) // pass NavController for logout
-        }
     }
 }
