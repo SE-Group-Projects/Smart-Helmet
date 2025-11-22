@@ -4,77 +4,84 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.ui.auth.HomeScreen
 import com.example.myapplication.ui.auth.LoginScreen
 import com.example.myapplication.ui.auth.RegisterScreen
+import com.example.myapplication.ui.screens.DashboardScreen
+import com.example.myapplication.ui.screens.MainScreen
+import com.example.myapplication.ui.screens.LoadingScreen
+import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.viewmodel.AuthViewModel
-import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
 
         setContent {
-            App()
+            MyApplicationTheme {
+                val navController = rememberNavController()
+                AppNavHost(navController = navController)
+            }
         }
     }
 }
 
 @Composable
-fun App() {
-    MaterialTheme {
-        Surface {
-            AppNav()
+fun AppNavHost(navController: NavHostController) {
+    // Create a single shared ViewModel instance
+    val authViewModel: AuthViewModel = viewModel()
+
+    NavHost(navController = navController, startDestination = "loading") {
+        // Loading Screen
+        composable("loading") {
+            LoadingScreen(onLoadingFinished = {
+                navController.navigate("login") {
+                    popUpTo("loading") { inclusive = true }
+                }
+            })
         }
-    }
-}
 
-@Composable
-fun AppNav() {
-    val navController = rememberNavController()
-
-    // Shared ViewModel for both login and register
-    val viewModel = AuthViewModel()
-
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-
+        // Login Screen
         composable("login") {
             LoginScreen(
-                viewModel = viewModel,
+                viewModel = authViewModel,
                 onLoginSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true } // prevents back navigation to login
+                    navController.navigate("main") {
+                        popUpTo("login") { inclusive = true }
                     }
                 },
                 onNavigateToRegister = { navController.navigate("register") }
             )
         }
 
+        // Register Screen
         composable("register") {
             RegisterScreen(
-                viewModel = viewModel,
+                viewModel = authViewModel,
                 onRegisterSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("register") { inclusive = true } // prevents back navigation to register
+                    navController.navigate("main") {
+                        popUpTo("register") { inclusive = true }
                     }
                 },
                 onNavigateToLogin = { navController.popBackStack() }
             )
+
         }
 
+        // Home / Dashboard Screen
         composable("home") {
-            HomeScreen(navController = navController) // pass NavController for logout
+            DashboardScreen()
+        }
+
+        // Main Screen (contains dashboard + bottom nav)
+        composable("main") {
+            MainScreen()
         }
     }
 }
