@@ -43,14 +43,26 @@ fun AddContactScreen() {
             .background(Color(0xFFF5F5F5))
             .padding(16.dp)
     ) {
-        // Page Title
-        Text(
-            text = "Add Contact",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = primaryColor,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        // Heading with Icon
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person, // heading icon
+                contentDescription = "Add Contact",
+                tint = primaryColor,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Add Contact",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = primaryColor
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -146,4 +158,3 @@ fun AddContactScreen() {
         }
     }
 }
-

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Settings
 
 @Composable
 fun GeneralSettingsScreen(
@@ -36,18 +37,33 @@ fun GeneralSettingsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(horizontal = 16.dp) // consistent with other pages
     ) {
-        // Heading
-        Text(
-            text = "General Settings",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = primaryColor,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        Spacer(modifier = Modifier.height(24.dp)) // consistent top space
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // Page Heading with Icon
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings, // use Settings icon
+                contentDescription = "General Settings",
+                tint = Color(0xFF1B3C53),
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "General Settings",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B3C53)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp)) // space after heading
+
 
         Column(
             modifier = Modifier

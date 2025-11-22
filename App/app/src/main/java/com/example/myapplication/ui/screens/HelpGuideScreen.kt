@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,18 +24,33 @@ fun HelpGuideScreen(onBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(horizontal = 16.dp) // same horizontal padding as other pages
     ) {
-        // Page Heading
-        Text(
-            text = "Help & User Guide",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = primaryColor,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        Spacer(modifier = Modifier.height(24.dp)) // consistent top space
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // Page Heading with Icon
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Help, // use Help icon
+                contentDescription = "Help & User Guide",
+                tint = Color(0xFF1B3C53),
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Help & User Guide",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B3C53)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp)) // space after heading
+
 
         Column(
             modifier = Modifier

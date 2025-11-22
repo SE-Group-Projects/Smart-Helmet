@@ -59,7 +59,6 @@ fun ProfileScreen() {
         "Medical Conditions" to medicalConditions
     )
 
-    // ---------- Field Colors ----------
     val fieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = primaryColor,
         unfocusedBorderColor = Color.Gray,
@@ -75,6 +74,31 @@ fun ProfileScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        // ---------- Heading like Dashboard ----------
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Profile",
+                    tint = primaryColor,
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Profile & Health Info",
+                    fontSize = 30.sp,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = primaryColor
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         // ---------- Profile Picture ----------
         item {
             Card(
@@ -93,7 +117,6 @@ fun ProfileScreen() {
                         modifier = Modifier.size(120.dp),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        // Normal profile icon without gradient
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Profile Placeholder",
@@ -102,7 +125,6 @@ fun ProfileScreen() {
                                 .size(120.dp)
                                 .clip(CircleShape)
                         )
-                        // Camera edit icon
                         Icon(
                             imageVector = Icons.Default.CameraAlt,
                             contentDescription = "Edit Picture",
@@ -121,7 +143,7 @@ fun ProfileScreen() {
                         onValueChange = { username = it },
                         label = { Text("Username") },
                         colors = fieldColors,
-                        textStyle = TextStyle(color = primaryColor), // Input text color
+                        textStyle = androidx.compose.ui.text.TextStyle(color = primaryColor),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -130,7 +152,7 @@ fun ProfileScreen() {
                         onValueChange = { email = it },
                         label = { Text("Email") },
                         colors = fieldColors,
-                        textStyle = TextStyle(color = primaryColor),
+                        textStyle = androidx.compose.ui.text.TextStyle(color = primaryColor),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -184,7 +206,7 @@ fun ProfileScreen() {
                         onValueChange = { emergencyMessage = it },
                         label = { Text("Default Emergency Message") },
                         colors = fieldColors,
-                        textStyle = TextStyle(color = primaryColor),
+                        textStyle = androidx.compose.ui.text.TextStyle(color = primaryColor),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -242,6 +264,7 @@ fun ProfileScreen() {
         }
     }
 }
+
 
 @Composable
 fun InfoCard(
